@@ -1,1 +1,1 @@
-# Skeleton project for Swagger
+# MFGT API project using Swagger

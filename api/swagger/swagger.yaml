@@ -28,6 +28,7 @@ paths:
   /reservations:
     x-swagger-router-controller: flightnet
     get:
+      operationId: getReservationsToday
       summary: Download todays reservations
       responses:
         200:
@@ -43,12 +44,13 @@ paths:
   /reservations/{date}:
     x-swagger-router-controller: flightnet
     get:
+      operationId: getReservationsByDate
       summary: Download reservations
       parameters:
         - name: date
           in: path
           type: string
-          format: date
+          #format: date
           required: true
       responses:
         200:
@@ -64,14 +66,13 @@ paths:
   /aerodromestatus:
     x-swagger-router-controller: aerodrome
     get:
+      operationId: status
       summary: Statos of the aerodrome
       responses:
         200:
           description: The aerodrome status
           schema:
-            type: array
-            items:
-              $ref: '#/definitions/ADStatus'
+            $ref: '#/definitions/ADStatus'
         default:
           description: Unexpected error
           schema:
@@ -163,7 +164,44 @@ definitions:
     properties:
       PilotStart:
         type: string
-        format: date
+      PilotEnd:
+        type: string
+      ReservationStart:
+        type: string
+      PilotUsername:
+        type: string
+      LastChangeDateTime:
+        type: string
+      ReservationCode:
+        type: string
+      Origin:
+        type: string
+      TypeOfFlight:
+        type: string
+      IsMaintenance:
+        type: string
+      ReservationStatus:
+        type: string
+      Destination:
+        type: string
+      InstructorEnd:
+        type: string
+      ReservationEnd:
+        type: string
+      LastChangeUsername:
+        type: string
+      InstructorUsername:
+        type: string
+      InstructorStart:
+        type: string
+      AircraftType:
+        type: string
+      Registration:
+        type: string
+      Instructor:
+        type: string
+      Pilot:
+        type: string
   ADStatus:
     type: object
     properties:
@@ -172,7 +210,6 @@ definitions:
         enum: ['open','restricted','closed']
       last_update_date:
         type: string
-        format: date
       last_update_by:
         type: string
       blank:
