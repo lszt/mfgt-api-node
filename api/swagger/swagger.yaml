@@ -1,0 +1,209 @@
+# this is an example of the Uber API
+# as a demonstration of an API spec in YAML
+#@app.route('/api/v1/reservations',defaults={'date': ''})
+#@app.route('/api/v1/reservations/<date>')
+#@app.route('/api/v1/aerodromestatus')
+#@app.route('/api/v1/firebaseauth/ip')
+#@app.route('/api/v1/firebaseauth/ip-test')
+#@app.route('/api/v1/firebaseauth/mfgt')
+#@app.route('/api/v1/firebaseauth/mfgt-test')
+#@app.route('/')
+
+swagger: '2.0'
+info:
+  title: MFGT API
+  description: Lommis AD and MFGT api
+  version: "0.0.1"
+# the domain of the service
+#host: mfgt-api.appspot.com
+host: localhost:10010
+# array of all schemes that your API supports
+schemes:
+  - http
+# will be prefixed to all paths
+basePath: /api/v1
+produces:
+  - application/json
+paths:
+  /reservations:
+    x-swagger-router-controller: flightnet
+    get:
+      summary: Download todays reservations
+      responses:
+        200:
+          description: An array of reservations
+          schema:
+            type: array
+            items:
+              $ref: '#/definitions/Reservation'
+        default:
+          description: Unexpected error
+          schema:
+            $ref: '#/definitions/Error'
+  /reservations/{date}:
+    x-swagger-router-controller: flightnet
+    get:
+      summary: Download reservations
+      parameters:
+        - name: date
+          in: path
+          type: string
+          format: date
+          required: true
+      responses:
+        200:
+          description: An array of reservations
+          schema:
+            type: array
+            items:
+              $ref: '#/definitions/Reservation'
+        default:
+          description: Unexpected error
+          schema:
+            $ref: '#/definitions/Error'
+  /aerodromestatus:
+    x-swagger-router-controller: aerodrome
+    get:
+      summary: Statos of the aerodrome
+      responses:
+        200:
+          description: The aerodrome status
+          schema:
+            type: array
+            items:
+              $ref: '#/definitions/ADStatus'
+        default:
+          description: Unexpected error
+          schema:
+            $ref: '#/definitions/Error' 
+  /firebaseauth/ip:
+    x-swagger-router-controller: firebase
+    post:
+      operationId: ip
+      summary: Authenticate Firebase with IP address
+      responses:
+        200:
+          description: Firebase Auth Token
+          schema:
+            $ref: '#/definitions/FirebaseAuth'
+        default:
+          description: Unexpected error
+          schema:
+            $ref: '#/definitions/Error'
+  /firebaseauth/ip-test:
+    x-swagger-router-controller: firebase
+    post:
+      operationId: ip_test
+      summary: Authenticate Firebase /dev with IP address
+      responses:
+        200:
+          description: Firebase Auth Token
+          schema:
+            $ref: '#/definitions/FirebaseAuth'
+        default:
+          description: Unexpected error
+          schema:
+            $ref: '#/definitions/Error'
+  /firebaseauth/mfgt:
+    x-swagger-router-controller: firebase
+    post:
+      operationId: mfgt
+      summary: Authenticate Firebase with MFGT Login
+      parameters:
+        - name: username
+          in: query
+          type: string
+          required: true
+        - name: password
+          in: query
+          type: string
+          required: true    
+      responses:
+        200:
+          description: Firebase Auth Token
+          schema:
+            $ref: '#/definitions/FirebaseAuth'
+        default:
+          description: Unexpected error
+          schema:
+            $ref: '#/definitions/Error'
+  /firebaseauth/mfgt-test:
+    x-swagger-router-controller: firebase
+    post:
+      operationId: mfgt_test
+      summary: Authenticate Firebase/dev with MFGT Login
+      parameters:
+        - name: username
+          in: query
+          type: string
+          required: true
+        - name: password
+          in: query
+          type: string
+          required: true    
+      responses:
+        200:
+          description: Firebase Auth Token
+          schema:
+            $ref: '#/definitions/FirebaseAuth'
+        default:
+          description: Unexpected error
+          schema:
+            $ref: '#/definitions/Error'
+definitions:
+  FirebaseAuth:
+    type: object
+    properties:
+      uid:
+        type: string
+      ip:
+        type: string
+  Reservation:
+    type: object
+    properties:
+      PilotStart:
+        type: string
+        format: date
+  ADStatus:
+    type: object
+    properties:
+      status:
+        type: string
+        enum: ['open','restricted','closed']
+      last_update_date:
+        type: string
+        format: date
+      last_update_by:
+        type: string
+      blank:
+        type: boolean
+      message:
+        type: string
+      webcam:
+        type: object
+        properties:
+          cams:
+            type: object
+            properties:
+              east:
+                $ref: '#/definitions/Camera'
+              west:
+                $ref: '#/definitions/Camera'    
+  Camera:
+    type: object
+    properties:
+      low:
+        type: string
+      high:
+        type: string
+  Error:
+    type: object
+    properties:
+      code:
+        type: integer
+        format: int32
+      message:
+        type: string
+      fields:
+        type: string
+

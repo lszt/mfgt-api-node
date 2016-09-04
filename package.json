@@ -1,0 +1,27 @@
+{
+  "name": "mfgt-api",
+  "version": "0.0.1",
+  "private": true,
+  "description": "MFGT API",
+  "keywords": [],
+  "author": "",
+  "license": "",
+  "main": "app.js",
+  "dependencies": {
+    "connect": "^3.3.5",
+    "cors": "^2.8.0",
+    "dotenv": "^2.0.0",
+    "firebase": "^3.3.0",
+    "firebase-token-generator": "^2.0.0",
+    "request": "^2.74.0",
+    "swagger-connect": "^0.1.0"
+  },
+  "devDependencies": {
+    "should": "^7.1.0",
+    "supertest": "^1.0.0"
+  },
+  "scripts": {
+    "start": "node app.js",
+    "test": "swagger project test"
+  }
+}
