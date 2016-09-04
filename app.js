@@ -18,10 +18,8 @@ SwaggerConnect.create(config, function(err, swaggerConnect) {
   // install middleware
   swaggerConnect.register(app);
 
-  var port = process.env.PORT || 10010;
-  app.listen(port);
+  var port = process.env.PORT || process.env.OPENSHIFT_NODEJS_PORT || 10010;
+  var host = process.env.IP   || process.env.OPENSHIFT_NODEJS_IP || '0.0.0.0';
 
-  if (swaggerConnect.runner.swagger.paths['/hello']) {
-    console.log('try this:\ncurl http://127.0.0.1:' + port + '/hello?name=Scott');
-  }
+  app.listen(port, host);
 });
