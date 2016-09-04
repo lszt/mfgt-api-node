@@ -6,6 +6,7 @@ var app = require('connect')();
 var cors = require('cors');
 app.use(cors());
 
+console.log(process.env);
 module.exports = app; // for testing
 
 var config = {
