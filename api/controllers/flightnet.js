@@ -46,12 +46,13 @@ var iconvlite = require('iconv-lite');
 var csvparse = require('csv-parse');
 
 function getReservations(req, res) {
-  var date = req.swagger.params.date.value;
+  var date = req.swagger.params.date ? req.swagger.params.date.value : undefined;
   if (date !== undefined && date.length==8) {
     // compatbility mode with old api invocation, REMOVE and switch to date argument!
     date = date.substr(0,4) + '-' + date.substr(4,2) + '-' + date.substr(6,2);
   };
-  var at = new Date(date) || Date.now()
+
+  var at = date ? new Date(date) : new Date()
   var startdate = strftime('%Y%m%d', at);
   var enddate = strftime('%Y%m%d', at);
   var fields = {
