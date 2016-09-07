@@ -4,39 +4,40 @@ var server = require('../../../app');
 
 describe('controllers', function() {
 
-  describe('hello_world', function() {
+  describe('flightnet', function() {
 
-    describe('GET /hello', function() {
+    describe('GET /reservations', function() {
 
-      it('should return a default string', function(done) {
+      it('should return current reservations', function(done) {
 
         request(server)
-          .get('/hello')
+          .get('/api/v1/reservations')
           .set('Accept', 'application/json')
           .expect('Content-Type', /json/)
           .expect(200)
+          .expect(function(res) {
+          })
           .end(function(err, res) {
             should.not.exist(err);
-
-            res.body.should.eql('Hello, stranger!');
-
             done();
           });
       });
 
-      it('should accept a name parameter', function(done) {
+    });
+
+    describe('GET /reservations/date', function() {
+
+      it('should return current reservations', function(done) {
 
         request(server)
-          .get('/hello')
-          .query({ name: 'Scott'})
+          .get('/api/v1/reservations/2016-01-01')
           .set('Accept', 'application/json')
           .expect('Content-Type', /json/)
           .expect(200)
+          .expect(function(res) {
+          })
           .end(function(err, res) {
             should.not.exist(err);
-
-            res.body.should.eql('Hello, Scott!');
-
             done();
           });
       });
