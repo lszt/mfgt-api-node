@@ -12,6 +12,7 @@
  */
 var util = require('util');
 var request = require('request');
+var moment = require('moment-timezone');
 
 var FLIGHTNET_COMPANY  = process.env.FLIGHTNET_COMPANY;
 var FLIGHTNET_USERNAME = process.env.FLIGHTNET_USERNAME;
@@ -78,7 +79,15 @@ function getReservations(req, res) {
       if (err) {
         next(err);
       }
-      res.json(data);
+      var tdata = data.map(function(r) {
+        Object.keys(r).map(function(v) {
+          if (['ReservationStart', 'ReservationEnd', 'PilotStart', 'PilotEnd', 'LastChangeDateTime'].indexOf(v)>=0) {
+            r[v] = moment.tz(r[v], "YYYYMMDD", "Europe/Zurich").format();
+          }
+        });
+        return r;
+      });
+      res.json(tdata);
     });
   });
 }
