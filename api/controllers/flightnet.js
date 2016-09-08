@@ -82,7 +82,7 @@ function getReservations(req, res) {
       var tdata = data.map(function(r) {
         Object.keys(r).map(function(v) {
           if (['ReservationStart', 'ReservationEnd', 'PilotStart', 'PilotEnd', 'LastChangeDateTime'].indexOf(v)>=0) {
-            r[v] = moment.tz(r[v], "YYYYMMDD", "Europe/Zurich").format();
+            r[v] = moment.tz(r[v], "YYYYMMDDHHmm", "Europe/Zurich").format();
           }
         });
         return r;
