@@ -43,7 +43,7 @@ module.exports = {
   Param 2: a handle to the response object
  */
 
-var AUTH_IPS = { "109.205.200.60": true };
+var AUTH_IPS = { "109.205.200.60": true, "77.59.197.122": true };
 
 function createToken(req, tokenGenerator) {
   var token = null;
