@@ -12,6 +12,7 @@
  */
 var util = require('util');
 var request = require('request');
+var fnauth = require('../helpers/flightnet');
 
 var FirebaseTokenGenerator = require("firebase-token-generator");
 var tokenGeneratorProd = new FirebaseTokenGenerator(process.env.PROD_FIREBASE_SECRET);
@@ -65,21 +66,13 @@ function firebaseauth_ip_test(req, res) {
   res.json(token);
 }
 
-function verifyMFGTLogin(username, password, cb) {
-  var url = "https://www.mfgt.ch/auth/auth.php"
-  var values = {'username': username, 'password': password};
-  request({'url': url, 'method': 'POST','form': values}, function(error, response, body) {
-    cb(body.trim() == "OK");
-  });
-}
-
-function firebaseauth_common(req, tokenGenerator, res) {
+function firebaseauth_common(req, company, tokenGenerator, res) {
   // variables defined in the Swagger document can be referenced using req.swagger.params.{parameter_name}
   var username = req.swagger.params.username.value;
   var password = req.swagger.params.password.value;
   var ip = req.headers['x-forwarded-for'] || req.connection.remoteAddress;
 
-  verifyMFGTLogin(username, password, function(ok) {
+  fnauth.passwordCheck(company, username, password, function(ok) {
     var token = null;
     if (ok) {
       var auth_payload = { "uid": username, "ip": ip }
@@ -90,9 +83,9 @@ function firebaseauth_common(req, tokenGenerator, res) {
 }
 
 function firebaseauth_mfgt(req, res) {
-  firebaseauth_common(req, tokenGeneratorProd, res);
+  firebaseauth_common(req, 'mfgt', tokenGeneratorProd, res);
 }
 
 function firebaseauth_mfgt_test(req, res) {
-  firebaseauth_common(req, tokenGeneratorTest, res);
+  firebaseauth_common(req, 'mfgt', tokenGeneratorTest, res);
 }
