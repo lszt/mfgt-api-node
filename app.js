@@ -1,6 +1,6 @@
 'use strict';
 
-require('dotenv').config();
+require('dotenv').config({silent: true});
 var SwaggerExpress = require('swagger-express-mw');
 var app = require('express')();
 var cors = require('cors');
