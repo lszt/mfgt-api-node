@@ -15,8 +15,13 @@ var request = require('request');
 var fnauth = require('../helpers/flightnet');
 
 var FirebaseTokenGenerator = require("firebase-token-generator");
-var tokenGeneratorProd = new FirebaseTokenGenerator(process.env.PROD_FIREBASE_SECRET);
-var tokenGeneratorTest = new FirebaseTokenGenerator(process.env.TEST_FIREBASE_SECRET);
+var tokenGeneratorProd;
+var tokenGeneratorTest;
+
+if (process.env.PROD_FIREBASE_SECRET) {
+  tokenGeneratorProd = new FirebaseTokenGenerator(process.env.PROD_FIREBASE_SECRET);
+  tokenGeneratorTest = new FirebaseTokenGenerator(process.env.TEST_FIREBASE_SECRET);
+};
 
 var authProfiles = {
   'lszt': {mode: 'flightnet', company: 'mfgt', tokenGenerator: tokenGeneratorProd},
