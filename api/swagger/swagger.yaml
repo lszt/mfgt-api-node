@@ -151,6 +151,33 @@ paths:
           description: Unexpected error
           schema:
             $ref: '#/definitions/Error'
+  /firebaseauth/flightnet/{authsetting}:
+    x-swagger-router-controller: firebase
+    post:
+      operationId: firebaseauth
+      summary: Authenticate Firebase/dev with Flightnet Login
+      consumes:
+        - application/json
+      parameters:
+        - name: authsetting
+          description: Name of authentication setting (e.g. mfgt/mfgt-test)
+          in: path
+          type: string
+          required: true
+        - name: authn
+          in: body
+          schema:
+            $ref: '#/definitions/AuthNRequest'
+          required: true
+      responses:
+        200:
+          description: Firebase Auth Token
+          schema:
+            $ref: '#/definitions/FirebaseAuth'
+        default:
+          description: Unexpected error
+          schema:
+            $ref: '#/definitions/Error'
 definitions:
   FirebaseAuth:
     type: object
@@ -232,6 +259,16 @@ definitions:
       low:
         type: string
       high:
+        type: string
+  AuthNRequest:
+    type: object
+    required:
+      - username
+      - password
+    properties:
+      username:
+        type: string
+      password:
         type: string
   Error:
     type: object

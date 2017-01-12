@@ -15,7 +15,7 @@ function passwordCheck(company, username, password, callback) {
     'username': username,
     'password': password,
   };
-
+console.log(args);
   soap.createClient(wsdl, function(err, client) {
     client.GetAPIKey(args, function(err, result) {
       if (err) {

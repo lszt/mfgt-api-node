@@ -18,6 +18,13 @@ var FirebaseTokenGenerator = require("firebase-token-generator");
 var tokenGeneratorProd = new FirebaseTokenGenerator(process.env.PROD_FIREBASE_SECRET);
 var tokenGeneratorTest = new FirebaseTokenGenerator(process.env.TEST_FIREBASE_SECRET);
 
+var authProfiles = {
+  'lszt': {mode: 'flightnet', company: 'mfgt', tokenGenerator: tokenGeneratorProd},
+  'lszt-test': {mode: 'flightnet', company: 'mfgt', tokenGenerator: tokenGeneratorTest},
+  'lszt-ip': {mode: 'ip', company: 'mfgt', tokenGenerator: tokenGeneratorProd},
+  'lszt-ip-test': {mode: 'ip', company: 'mfgt', tokenGenerator: tokenGeneratorTest},
+};
+
 /*
  Once you 'require' a module you can reference the things that it exports.  These are defined in module.exports.
 
@@ -35,6 +42,7 @@ module.exports = {
   ip_test: firebaseauth_ip_test,
   mfgt: firebaseauth_mfgt,
   mfgt_test: firebaseauth_mfgt_test,
+  firebaseauth: firebaseauth,
 };
 
 /*
@@ -45,6 +53,31 @@ module.exports = {
  */
 
 var AUTH_IPS = { "109.205.200.60": true, "77.59.197.122": true };
+
+var authProfiles = {};
+
+function getAuthProfile(profile) {
+  var p = profile.replace(/[^a-z\-]/g, '');
+  if (p != profile) {
+    return {};
+  } else if (authProfiles[profile]) {
+    return authProfiles[profile];
+  } else {
+    p = p.replace(/-/g, '_');
+    var PNAME = "AUTH_" + p.toUpperCase();
+    console.log(PNAME);
+    if (process.env[PNAME + "_COMPANY"]) {
+      var newp = {};
+      newp.tokenGenerator = new FirebaseTokenGenerator(process.env[PNAME + "_FIREBASE_SECRET"]);
+      newp.company = process.env[PNAME + "_COMPANY" ] || profile;
+      newp.mode = process.env[PNAME + "_MODE"] || "flightnet";
+      authProfiles[profile] = newp;
+      return newp;
+    } else {
+      return {};
+    }
+  }
+}
 
 function createToken(req, tokenGenerator) {
   var token = null;
@@ -66,10 +99,12 @@ function firebaseauth_ip_test(req, res) {
   res.json(token);
 }
 
-function firebaseauth_common(req, company, tokenGenerator, res) {
-  // variables defined in the Swagger document can be referenced using req.swagger.params.{parameter_name}
-  var username = req.swagger.params.username.value;
-  var password = req.swagger.params.password.value;
+function firebaseauth_ip_common(req, company, tokenGenerator, res) {
+  var token = createToken(req, tokenGenerator);
+  res.json(token);
+}
+
+function firebaseauth_common(req, company, username, password, tokenGenerator, res) {
   var ip = req.headers['x-forwarded-for'] || req.connection.remoteAddress;
 
   fnauth.passwordCheck(company, username, password, function(ok) {
@@ -83,9 +118,34 @@ function firebaseauth_common(req, company, tokenGenerator, res) {
 }
 
 function firebaseauth_mfgt(req, res) {
-  firebaseauth_common(req, 'mfgt', tokenGeneratorProd, res);
+  var username = req.swagger.params.username.value;
+  var password = req.swagger.params.password.value;
+  firebaseauth_common(req, 'mfgt', username, password, tokenGeneratorProd, res);
 }
 
 function firebaseauth_mfgt_test(req, res) {
-  firebaseauth_common(req, 'mfgt', tokenGeneratorTest, res);
+  var username = req.swagger.params.username.value;
+  var password = req.swagger.params.password.value;
+  firebaseauth_common(req, 'mfgt', username, password, tokenGeneratorTest, res);
+}
+
+function firebaseauth(req, res) {
+  var authsetting = req.swagger.params.authsetting.value;
+  var authn = req.swagger.params.authn.value;
+  var username = authn.username;
+  var password = authn.password;
+
+  var p = getAuthProfile(authsetting);
+  if (p) {
+    if (p.mode == 'ip') {
+      firebaseauth_ip_common(req, p.company, username, password, tokenGeneratorTest, res);
+    } else if (p.mode == 'flightnet') {
+
+      firebaseauth_common(req, p.company, username, password, tokenGeneratorTest, res);
+    } else {
+      res.status(400).json({message: 'invalid auth'});
+    }
+  } else {
+    res.status(400).json({message: 'invalid auth'});
+  }
 }
