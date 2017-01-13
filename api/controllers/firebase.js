@@ -143,10 +143,10 @@ function firebaseauth(req, res) {
   var p = getAuthProfile(authsetting);
   if (p) {
     if (p.mode == 'ip') {
-      firebaseauth_ip_common(req, p.company, username, password, tokenGeneratorTest, res);
+      firebaseauth_ip_common(req, p.company, username, password, p.tokenGenerator, res);
     } else if (p.mode == 'flightnet') {
 
-      firebaseauth_common(req, p.company, username, password, tokenGeneratorTest, res);
+      firebaseauth_common(req, p.company, username, password, p.tokenGenerator, res);
     } else {
       res.status(400).json({message: 'invalid auth'});
     }
