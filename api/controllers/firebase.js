@@ -67,7 +67,7 @@ function getAuthProfile(profile) {
   }
 }
 
-function firebaseauth_ip_common(req, company, tokenGenerator, res) {
+function firebaseauth_ip_common(req, tokenGenerator, res) {
   var token = null;
   var ip = req.headers['x-forwarded-for'] || req.connection.remoteAddress;
   if (AUTH_IPS[ip]) {
@@ -78,7 +78,7 @@ function firebaseauth_ip_common(req, company, tokenGenerator, res) {
   res.json({"token": token});
 }
 
-function firebaseauth_none_common(req, company, tokenGenerator, res) {
+function firebaseauth_none_common(req, tokenGenerator, res) {
   var token = null;
   var ip = req.headers['x-forwarded-for'] || req.connection.remoteAddress;
   var auth_payload = { "uid": "none" , "ip": ip };
