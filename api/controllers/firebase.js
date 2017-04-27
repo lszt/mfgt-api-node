@@ -78,7 +78,6 @@ function firebaseauth_ip_common(req, profile, res) {
     var auth_payload = { "uid": "ipauth", "ip": ip }
     token = profile.tokenGenerator.createToken(auth_payload)
   }
-  var token = createIPToken(req, tokenGenerator);
   res.json({"token": token});
 }
 
