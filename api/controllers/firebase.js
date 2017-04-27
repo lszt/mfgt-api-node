@@ -109,6 +109,12 @@ function firebaseauth_ip_common(req, company, tokenGenerator, res) {
   res.json(token);
 }
 
+function firebaseauth_none_common(req, company, tokenGenerator, res) {
+  var auth_payload = { "uid": "none" };
+  var token = tokenGenerator.createToken(auth_payload);
+  res.json(token);
+}
+
 function firebaseauth_common(req, company, username, password, tokenGenerator, res) {
   var ip = req.headers['x-forwarded-for'] || req.connection.remoteAddress;
 
@@ -144,6 +150,9 @@ function firebaseauth(req, res) {
   if (p) {
     if (p.mode == 'ip') {
       firebaseauth_ip_common(req, p.company, username, password, p.tokenGenerator, res);
+    } else if (p.mode == 'none') {
+
+      firebaseauth_none_common(req, p.company, username, password, p.tokenGenerator, res);
     } else if (p.mode == 'flightnet') {
 
       firebaseauth_common(req, p.company, username, password, p.tokenGenerator, res);
