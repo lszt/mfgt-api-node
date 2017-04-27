@@ -15,20 +15,7 @@ var request = require('request');
 var fnauth = require('../helpers/flightnet');
 
 var FirebaseTokenGenerator = require("firebase-token-generator");
-var tokenGeneratorProd;
-var tokenGeneratorTest;
-
-if (process.env.PROD_FIREBASE_SECRET) {
-  tokenGeneratorProd = new FirebaseTokenGenerator(process.env.PROD_FIREBASE_SECRET);
-  tokenGeneratorTest = new FirebaseTokenGenerator(process.env.TEST_FIREBASE_SECRET);
-};
-
-var authProfiles = {
-  'lszt': {mode: 'flightnet', company: 'mfgt', tokenGenerator: tokenGeneratorProd},
-  'lszt-test': {mode: 'flightnet', company: 'mfgt', tokenGenerator: tokenGeneratorTest},
-  'lszt-ip': {mode: 'ip', company: 'mfgt', tokenGenerator: tokenGeneratorProd},
-  'lszt-ip-test': {mode: 'ip', company: 'mfgt', tokenGenerator: tokenGeneratorTest},
-};
+var authProfiles = {};
 
 /*
  Once you 'require' a module you can reference the things that it exports.  These are defined in module.exports.
@@ -43,10 +30,6 @@ var authProfiles = {
   we specify that in the exports of this module that 'hello' maps to the function named 'hello'
  */
 module.exports = {
-  ip: firebaseauth_ip,
-  ip_test: firebaseauth_ip_test,
-  mfgt: firebaseauth_mfgt,
-  mfgt_test: firebaseauth_mfgt_test,
   firebaseauth: firebaseauth,
 };
 
@@ -71,7 +54,7 @@ function getAuthProfile(profile) {
     p = p.replace(/-/g, '_');
     var PNAME = "AUTH_" + p.toUpperCase();
     console.log(PNAME);
-    if (process.env[PNAME + "_COMPANY"]) {
+    if (process.env[PNAME + "_FIREBASE_SECRET"]) {
       var newp = {};
       newp.tokenGenerator = new FirebaseTokenGenerator(process.env[PNAME + "_FIREBASE_SECRET"]);
       newp.company = process.env[PNAME + "_COMPANY" ] || profile;
@@ -84,38 +67,26 @@ function getAuthProfile(profile) {
   }
 }
 
-function createToken(req, tokenGenerator) {
+function firebaseauth_ip_common(req, company, tokenGenerator, res) {
   var token = null;
   var ip = req.headers['x-forwarded-for'] || req.connection.remoteAddress;
   if (AUTH_IPS[ip]) {
     var auth_payload = { "uid": "ipauth", "ip": ip }
     token = tokenGenerator.createToken(auth_payload)
   }
-  return { "token": token }
-}
-
-function firebaseauth_ip(req, res) {
-  var token = createToken(req, tokenGeneratorProd);
-  res.json(token);
-}
-
-function firebaseauth_ip_test(req, res) {
-  var token = createToken(req, tokenGeneratorTest);
-  res.json(token);
-}
-
-function firebaseauth_ip_common(req, company, tokenGenerator, res) {
-  var token = createToken(req, tokenGenerator);
-  res.json(token);
+  var token = createIPToken(req, tokenGenerator);
+  res.json({"token": token});
 }
 
 function firebaseauth_none_common(req, company, tokenGenerator, res) {
-  var auth_payload = { "uid": "none" , "ip": "none" };
+  var token = null;
+  var ip = req.headers['x-forwarded-for'] || req.connection.remoteAddress;
+  var auth_payload = { "uid": "none" , "ip": ip };
   var token = tokenGenerator.createToken(auth_payload);
   res.json({"token": token});
 }
 
-function firebaseauth_common(req, company, username, password, tokenGenerator, res) {
+function firebaseauth_flightnet_common(req, company, username, password, tokenGenerator, res) {
   var ip = req.headers['x-forwarded-for'] || req.connection.remoteAddress;
 
   fnauth.passwordCheck(company, username, password, function(ok) {
@@ -128,18 +99,6 @@ function firebaseauth_common(req, company, username, password, tokenGenerator, r
   });
 }
 
-function firebaseauth_mfgt(req, res) {
-  var username = req.swagger.params.username.value;
-  var password = req.swagger.params.password.value;
-  firebaseauth_common(req, 'mfgt', username, password, tokenGeneratorProd, res);
-}
-
-function firebaseauth_mfgt_test(req, res) {
-  var username = req.swagger.params.username.value;
-  var password = req.swagger.params.password.value;
-  firebaseauth_common(req, 'mfgt', username, password, tokenGeneratorTest, res);
-}
-
 function firebaseauth(req, res) {
   var authsetting = req.swagger.params.authsetting.value;
   var authn = req.swagger.params.authn.value;
@@ -149,13 +108,11 @@ function firebaseauth(req, res) {
   var p = getAuthProfile(authsetting);
   if (p) {
     if (p.mode == 'ip') {
-      firebaseauth_ip_common(req, p.company, p.tokenGenerator, res);
+      firebaseauth_ip_common(req, p.tokenGenerator, res);
     } else if (p.mode == 'none') {
-
-      firebaseauth_none_common(req, p.company, p.tokenGenerator, res);
+      firebaseauth_none_common(req, p.tokenGenerator, res);
     } else if (p.mode == 'flightnet') {
-
-      firebaseauth_common(req, p.company, username, password, p.tokenGenerator, res);
+      firebaseauth_flightnet_common(req, p.company, username, password, p.tokenGenerator, res);
     } else {
       res.status(400).json({message: 'invalid auth'});
     }

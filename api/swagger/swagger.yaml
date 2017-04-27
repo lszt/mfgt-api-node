@@ -1,5 +1,3 @@
-# this is an example of the Uber API
-# as a demonstration of an API spec in YAML
 #@app.route('/api/v1/reservations',defaults={'date': ''})
 #@app.route('/api/v1/reservations/<date>')
 #@app.route('/api/v1/aerodromestatus')
@@ -11,11 +9,10 @@
 
 swagger: '2.0'
 info:
-  title: MFGT API
-  description: Lommis AD and MFGT api
-  version: "0.0.1"
+  title: AD API
+  description: Aerodrome AD API
+  version: "0.0.2"
 # the domain of the service
-#host: mfgt-api.appspot.com
 host: localhost:10010
 # array of all schemes that your API supports
 schemes:
@@ -77,80 +74,6 @@ paths:
           description: Unexpected error
           schema:
             $ref: '#/definitions/Error' 
-  /firebaseauth/ip:
-    x-swagger-router-controller: firebase
-    post:
-      operationId: ip
-      summary: Authenticate Firebase with IP address
-      responses:
-        200:
-          description: Firebase Auth Token
-          schema:
-            $ref: '#/definitions/FirebaseAuth'
-        default:
-          description: Unexpected error
-          schema:
-            $ref: '#/definitions/Error'
-  /firebaseauth/ip-test:
-    x-swagger-router-controller: firebase
-    post:
-      operationId: ip_test
-      summary: Authenticate Firebase /dev with IP address
-      responses:
-        200:
-          description: Firebase Auth Token
-          schema:
-            $ref: '#/definitions/FirebaseAuth'
-        default:
-          description: Unexpected error
-          schema:
-            $ref: '#/definitions/Error'
-  /firebaseauth/mfgt:
-    x-swagger-router-controller: firebase
-    post:
-      operationId: mfgt
-      summary: Authenticate Firebase with MFGT Login
-      parameters:
-        - name: username
-          in: query
-          type: string
-          required: true
-        - name: password
-          in: query
-          type: string
-          required: true    
-      responses:
-        200:
-          description: Firebase Auth Token
-          schema:
-            $ref: '#/definitions/FirebaseAuth'
-        default:
-          description: Unexpected error
-          schema:
-            $ref: '#/definitions/Error'
-  /firebaseauth/mfgt-test:
-    x-swagger-router-controller: firebase
-    post:
-      operationId: mfgt_test
-      summary: Authenticate Firebase/dev with MFGT Login
-      parameters:
-        - name: username
-          in: query
-          type: string
-          required: true
-        - name: password
-          in: query
-          type: string
-          required: true    
-      responses:
-        200:
-          description: Firebase Auth Token
-          schema:
-            $ref: '#/definitions/FirebaseAuth'
-        default:
-          description: Unexpected error
-          schema:
-            $ref: '#/definitions/Error'
   /firebaseauth/flightnet/{authsetting}:
     x-swagger-router-controller: firebase
     post:
