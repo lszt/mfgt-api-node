@@ -106,13 +106,13 @@ function firebaseauth_ip_test(req, res) {
 
 function firebaseauth_ip_common(req, company, tokenGenerator, res) {
   var token = createToken(req, tokenGenerator);
-  res.json({"token": token});
+  res.json(token);
 }
 
 function firebaseauth_none_common(req, company, tokenGenerator, res) {
   var auth_payload = { "uid": "none" , "ip": "none" };
   var token = tokenGenerator.createToken(auth_payload);
-  res.json(token);
+  res.json({"token": token});
 }
 
 function firebaseauth_common(req, company, username, password, tokenGenerator, res) {
