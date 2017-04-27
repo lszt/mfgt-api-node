@@ -110,7 +110,7 @@ function firebaseauth_ip_common(req, company, tokenGenerator, res) {
 }
 
 function firebaseauth_none_common(req, company, tokenGenerator, res) {
-  var auth_payload = { "uid": "none" };
+  var auth_payload = { "uid": "none" , "ip": "none" };
   var token = tokenGenerator.createToken(auth_payload);
   res.json(token);
 }
