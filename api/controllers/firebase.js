@@ -149,10 +149,10 @@ function firebaseauth(req, res) {
   var p = getAuthProfile(authsetting);
   if (p) {
     if (p.mode == 'ip') {
-      firebaseauth_ip_common(req, p.company, username, password, p.tokenGenerator, res);
+      firebaseauth_ip_common(req, p.company, p.tokenGenerator, res);
     } else if (p.mode == 'none') {
 
-      firebaseauth_none_common(req, p.company, username, password, p.tokenGenerator, res);
+      firebaseauth_none_common(req, p.company, p.tokenGenerator, res);
     } else if (p.mode == 'flightnet') {
 
       firebaseauth_common(req, p.company, username, password, p.tokenGenerator, res);
