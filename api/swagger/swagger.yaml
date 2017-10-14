@@ -77,6 +77,20 @@ paths:
           description: Unexpected error
           schema:
             $ref: '#/definitions/Error' 
+  /aerodromeweather:
+    x-swagger-router-controller: weather
+    get:
+      operationId: info
+      summary: Weather info of the aerodrome
+      responses:
+        200:
+          description: The aerodrome weather
+          schema:
+            $ref: '#/definitions/WeatherInfo'
+        default:
+          description: Unexpected error
+          schema:
+            $ref: '#/definitions/Error'
   /firebaseauth/ip:
     x-swagger-router-controller: firebase
     post:
@@ -260,6 +274,25 @@ definitions:
         type: string
       high:
         type: string
+  WeatherInfo:
+    type: object
+    properties:
+      last_update:
+        type: string
+      Temperature:
+        type: number
+      Humidity:
+        type: number
+      Pressure:
+        type: number
+      WindAngle:
+        type: number
+      WindStrength:
+        type: number
+      GustAngle:
+        type: number
+      GustStrength:
+        type: number
   AuthNRequest:
     type: object
     required:
