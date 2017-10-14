@@ -278,7 +278,7 @@ definitions:
     type: object
     properties:
       last_update:
-        type: string
+        type: number
       Temperature:
         type: number
       Humidity:
