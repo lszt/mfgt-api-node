@@ -66,7 +66,9 @@ function info(req, res) {
       res.json({});
     } else {
       var out = {};
-      out.last_update = devices[0].dashboard_data.time_utc;
+      var last_update = devices[0].dashboard_data.time_utc * 1000;
+      out.last_update = new Date(last_update).toISOString();
+      out.last_update_age = new Date().getTime() - last_update;
       addToResult(out, devices[0].dashboard_data);
       var mods = devices[0].modules;
       for (var m in mods) {
