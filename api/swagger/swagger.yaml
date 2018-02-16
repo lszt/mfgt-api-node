@@ -91,6 +91,38 @@ paths:
           description: Unexpected error
           schema:
             $ref: '#/definitions/Error'
+  /flights:
+    x-swagger-router-controller: flights
+    get:
+      operationId: flights
+      summary: Flight info of the aerodrome
+      responses:
+        200:
+          description: The aerodrome flights
+          schema:
+            type: array
+            items:
+              $ref: '#/definitions/FlightInfo'
+        default:
+          description: Unexpected error
+          schema:
+            $ref: '#/definitions/Error'
+  /events:
+    x-swagger-router-controller: events
+    get:
+      operationId: events
+      summary: Event info of the aerodrome
+      responses:
+        200:
+          description: The aerodrome events
+          schema:
+            type: array
+            items:
+              $ref: '#/definitions/EventInfo'
+        default:
+          description: Unexpected error
+          schema:
+            $ref: '#/definitions/Error'
   /firebaseauth/ip:
     x-swagger-router-controller: firebase
     post:
@@ -273,6 +305,32 @@ definitions:
       low:
         type: string
       high:
+        type: string
+  EventInfo:
+    type: object
+    properties:
+      From:
+        type: string
+        format: dateTime
+      Until:
+        type: string
+        format: dateTime
+      Description:
+        type: string
+  FlightInfo:
+    type: object
+    properties:
+      FlightDirection:
+        type: string
+      Registration:
+        type: string
+      AircraftType:
+        type: string
+      DateOfFlight:
+        type: string
+      Location:
+        type: string
+      Pilot:
         type: string
   WeatherInfo:
     type: object
