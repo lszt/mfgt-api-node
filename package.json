@@ -7,6 +7,9 @@
   "author": "",
   "license": "",
   "main": "app.js",
+  "engines": {
+    "node": "8.x"
+  },
   "dependencies": {
     "connect": "^3.3.5",
     "cors": "^2.8.0",
