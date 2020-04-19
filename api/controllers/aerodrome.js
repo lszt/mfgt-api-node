@@ -37,8 +37,20 @@ module.exports = {
  */
 
 function status(req, res) {
-  var url = "https://status.mfgt.ch/status-api.php"
+  var url = "https://flights.lszt.ch/api/aerodrome/status"
+
   request({url: url, json: true}, function(error, response, body) {
+    body.webcam= {
+      "cams" : {
+         "east" : {
+            "high" : "http://webcam.mfgt.ch/eh.jpg",
+            "low" : "http://webcam.mfgt.ch/em.jpg"
+         },
+         "west" : {
+            "high" : "http://webcam.mfgt.ch/wh.jpg",
+            "low" : "http://webcam.mfgt.ch/wm.jpg"
+         }
+      }};
     res.json(body);
   });
 }
