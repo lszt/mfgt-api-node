@@ -64,7 +64,7 @@ function info(req, res) {
   api.getStationsData(function(err, devices) {
     if (err || devices === undefined) { 
       res.json({});
-    } else {
+    } else if devices[0].dashboard_data {
       var out = {};
       var last_update = devices[0].dashboard_data.time_utc * 1000;
       out.last_update = new Date(last_update).toISOString();
@@ -76,6 +76,8 @@ function info(req, res) {
         addToResult(out, dd);
       };
       res.json(out);
+    } else {
+      res.json({});
     }
   });
 }
