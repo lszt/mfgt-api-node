@@ -62,7 +62,7 @@ function addToResult(out, dd) {
 function info(req, res) {
   var api = new netatmo(auth);
   api.getStationsData(function(err, devices) {
-    if (err) { 
+    if (err || devices === undefined) { 
       res.json({});
     } else {
       var out = {};
