@@ -8,7 +8,7 @@
   "license": "",
   "main": "app.js",
   "engines": {
-    "node": "10.x"
+    "node": "10.20.1"
   },
   "dependencies": {
     "connect": "^3.3.5",
