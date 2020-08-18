@@ -56,6 +56,7 @@ function addToResult(out, dd) {
       out[val] = dd[val];
     }
   }
+  console.log(dd);
   Object.keys(dd).map(valFilter);
 }
 
