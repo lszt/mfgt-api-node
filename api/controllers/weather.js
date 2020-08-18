@@ -56,8 +56,9 @@ function addToResult(out, dd) {
       out[val] = dd[val];
     }
   }
-  console.log(dd);
-  Object.keys(dd).map(valFilter);
+  if (dd != undefined) {
+    Object.keys(dd).map(valFilter);
+  }
 }
 
 function info(req, res) {
