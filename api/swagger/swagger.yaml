@@ -3,10 +3,6 @@
 #@app.route('/api/v1/reservations',defaults={'date': ''})
 #@app.route('/api/v1/reservations/<date>')
 #@app.route('/api/v1/aerodromestatus')
-#@app.route('/api/v1/firebaseauth/ip')
-#@app.route('/api/v1/firebaseauth/ip-test')
-#@app.route('/api/v1/firebaseauth/mfgt')
-#@app.route('/api/v1/firebaseauth/mfgt-test')
 #@app.route('/')
 
 swagger: '2.0'
@@ -123,115 +119,7 @@ paths:
           description: Unexpected error
           schema:
             $ref: '#/definitions/Error'
-  /firebaseauth/ip:
-    x-swagger-router-controller: firebase
-    post:
-      operationId: ip
-      summary: Authenticate Firebase with IP address
-      responses:
-        200:
-          description: Firebase Auth Token
-          schema:
-            $ref: '#/definitions/FirebaseAuth'
-        default:
-          description: Unexpected error
-          schema:
-            $ref: '#/definitions/Error'
-  /firebaseauth/ip-test:
-    x-swagger-router-controller: firebase
-    post:
-      operationId: ip_test
-      summary: Authenticate Firebase /dev with IP address
-      responses:
-        200:
-          description: Firebase Auth Token
-          schema:
-            $ref: '#/definitions/FirebaseAuth'
-        default:
-          description: Unexpected error
-          schema:
-            $ref: '#/definitions/Error'
-  /firebaseauth/mfgt:
-    x-swagger-router-controller: firebase
-    post:
-      operationId: mfgt
-      summary: Authenticate Firebase with MFGT Login
-      parameters:
-        - name: username
-          in: query
-          type: string
-          required: true
-        - name: password
-          in: query
-          type: string
-          required: true    
-      responses:
-        200:
-          description: Firebase Auth Token
-          schema:
-            $ref: '#/definitions/FirebaseAuth'
-        default:
-          description: Unexpected error
-          schema:
-            $ref: '#/definitions/Error'
-  /firebaseauth/mfgt-test:
-    x-swagger-router-controller: firebase
-    post:
-      operationId: mfgt_test
-      summary: Authenticate Firebase/dev with MFGT Login
-      parameters:
-        - name: username
-          in: query
-          type: string
-          required: true
-        - name: password
-          in: query
-          type: string
-          required: true    
-      responses:
-        200:
-          description: Firebase Auth Token
-          schema:
-            $ref: '#/definitions/FirebaseAuth'
-        default:
-          description: Unexpected error
-          schema:
-            $ref: '#/definitions/Error'
-  /firebaseauth/flightnet/{authsetting}:
-    x-swagger-router-controller: firebase
-    post:
-      operationId: firebaseauth
-      summary: Authenticate Firebase/dev with Flightnet Login
-      consumes:
-        - application/json
-      parameters:
-        - name: authsetting
-          description: Name of authentication setting (e.g. mfgt/mfgt-test)
-          in: path
-          type: string
-          required: true
-        - name: authn
-          in: body
-          schema:
-            $ref: '#/definitions/AuthNRequest'
-          required: true
-      responses:
-        200:
-          description: Firebase Auth Token
-          schema:
-            $ref: '#/definitions/FirebaseAuth'
-        default:
-          description: Unexpected error
-          schema:
-            $ref: '#/definitions/Error'
 definitions:
-  FirebaseAuth:
-    type: object
-    properties:
-      uid:
-        type: string
-      ip:
-        type: string
   Reservation:
     type: object
     properties:
@@ -354,16 +242,6 @@ definitions:
         type: number
       GustStrength:
         type: number
-  AuthNRequest:
-    type: object
-    required:
-      - username
-      - password
-    properties:
-      username:
-        type: string
-      password:
-        type: string
   Error:
     type: object
     properties:
