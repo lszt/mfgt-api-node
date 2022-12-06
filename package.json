@@ -16,7 +16,7 @@
     "csv": "^1.1.0",
     "csv-parse": "^1.1.7",
     "dotenv": "^2.0.0",
-    "express": "^4.12.3",
+    "express": "^4.17.3",
     "firebase": "^3.3.0",
     "firebase-token-generator": "^2.0.0",
     "iconv-lite": "^0.4.13",
